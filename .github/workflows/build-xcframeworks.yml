@@ -1,0 +1,86 @@
+name: Build & Release XCFrameworks
+
+on:
+  push:
+    tags:
+      - "*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Release
+    runs-on: macos-14
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "15.2"
+
+      - name: Derive Release Metadata
+        id: release_meta
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_TYPE:-}" == "tag" ]]; then
+            tag="${GITHUB_REF_NAME}"
+          else
+            tag="manual-${GITHUB_RUN_ID}"
+          fi
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "RELEASE_TAG=${tag}" >> "$GITHUB_ENV"
+
+      - name: Build & Package XCFrameworks
+        run: |
+          chmod +x build_xcframeworks.sh
+          bundle exec rake release:prepare
+
+      - name: List Artifacts
+        run: ls -R output/release
+
+      - name: Generate Release Notes
+        id: release_notes
+        run: |
+          set -euo pipefail
+          frameworks=(Lynx PrimJS)
+          body="# Lynx Binary Release\n\n- Tag: \`${RELEASE_TAG}\`\n- Repository: \`${GITHUB_REPOSITORY}\`\n\n## Downloads\n"
+          for framework in "${frameworks[@]}"; do
+            zip_path="output/release/artifacts/${framework}.xcframework.zip"
+            checksum=$(swift package compute-checksum "$zip_path")
+            body+="\n- **${framework}**\n  - File: \`${framework}.xcframework.zip\`\n  - Checksum: \`${checksum}\`"
+          done
+          {
+            echo 'body<<EOF'
+            echo "$body"
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release_meta.outputs.tag }}
+          name: Lynx Release ${{ steps.release_meta.outputs.tag }}
+          body: ${{ steps.release_notes.outputs.body }}
+          files: |
+            output/release/artifacts/Lynx.xcframework.zip
+            output/release/artifacts/PrimJS.xcframework.zip
+          draft: false
+          prerelease: false
+
+      - name: Upload Build Artifacts (Workflow)
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ steps.release_meta.outputs.tag }}
+          path: output/release/artifacts/
+          retention-days: 30

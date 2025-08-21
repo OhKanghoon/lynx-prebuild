@@ -1,0 +1,44 @@
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Xcode
+build/
+DerivedData/
+*.xcworkspace/
+*.xcodeproj/
+*.xcuserstate
+*.xccheckout
+*.moved-aside
+*.xcuserdatad/
+xcuserdata/
+
+# CocoaPods
+Pods/
+
+# Swift Package Manager
+.build/
+Package.resolved
+
+# Build outputs
+output/
+
+# Ruby
+.bundle/
+vendor/bundle/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
