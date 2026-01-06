@@ -1,6 +1,10 @@
 # Lynx XCFramework Builder
 
-Minimal CI/CD wrapper that turns the Lynx CocoaPods stack into distributable XCFramework zips (`Lynx`, `PrimJS`). Everything is generated on demand so the repo only stores build logic.
+Minimal CI/CD wrapper that turns the Lynx CocoaPods stack into distributable XCFramework zips (`Lynx`, `LynxBase`, `LynxServiceAPI`, `PrimJS`). Everything is generated on demand so the repo only stores build logic.
+
+## Resource Bundle Handling
+
+The build script automatically embeds resource bundles (like `LynxResources.bundle` containing `lynx_core.js`) into their corresponding frameworks. This ensures that XCFrameworks are self-contained and can be distributed as single artifacts.
 
 ## Local workflow
 

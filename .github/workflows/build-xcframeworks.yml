@@ -52,17 +52,16 @@ jobs:
       - name: Generate Release Notes
         id: release_notes
         run: |
-          set -euo pipefail
-          frameworks=(Lynx PrimJS)
-          body="# Lynx Binary Release\n\n- Tag: \`${RELEASE_TAG}\`\n- Repository: \`${GITHUB_REPOSITORY}\`\n\n## Downloads\n"
-          for framework in "${frameworks[@]}"; do
-            zip_path="output/release/artifacts/${framework}.xcframework.zip"
-            checksum=$(swift package compute-checksum "$zip_path")
-            body+="\n- **${framework}**\n  - File: \`${framework}.xcframework.zip\`\n  - Checksum: \`${checksum}\`"
-          done
           {
             echo 'body<<EOF'
-            echo "$body"
+            echo '# Lynx Binary Release'
+            echo
+            echo '- Tag: ${{ steps.release_meta.outputs.tag }}'
+            echo
+            echo '- Lynx.xcframework'
+            echo '- LynxBase.xcframework'
+            echo '- LynxServiceAPI.xcframework'
+            echo '- PrimJS.xcframework'
             echo EOF
           } >> "$GITHUB_OUTPUT"
 
@@ -74,6 +73,8 @@ jobs:
           body: ${{ steps.release_notes.outputs.body }}
           files: |
             output/release/artifacts/Lynx.xcframework.zip
+            output/release/artifacts/LynxBase.xcframework.zip
+            output/release/artifacts/LynxServiceAPI.xcframework.zip
             output/release/artifacts/PrimJS.xcframework.zip
           draft: false
           prerelease: false
