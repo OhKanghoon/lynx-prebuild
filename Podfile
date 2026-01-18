@@ -1,10 +1,10 @@
-platform :ios, '16.0'
+platform :ios, '13.0'
 
 inhibit_all_warnings!
 source 'https://cdn.cocoapods.org/'
 
 target 'LynxPrebuild' do
-  use_frameworks! linkage: :static
+  use_frameworks!  # Dynamic framework for resource bundle support
 
   pod 'Lynx', '3.6.0', subspecs: %w[Framework]
 
