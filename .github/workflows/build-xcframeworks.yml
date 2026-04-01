@@ -62,6 +62,11 @@ jobs:
             echo '- LynxBase.xcframework'
             echo '- LynxServiceAPI.xcframework'
             echo '- PrimJS.xcframework'
+            echo '- BaseDevtool.xcframework'
+            echo '- DebugRouter.xcframework'
+            echo '- LynxDevtool.xcframework'
+            echo '- LynxService.xcframework'
+            echo '- XElement.xcframework'
             echo EOF
           } >> "$GITHUB_OUTPUT"
 
@@ -76,6 +81,11 @@ jobs:
             output/release/artifacts/LynxBase.xcframework.zip
             output/release/artifacts/LynxServiceAPI.xcframework.zip
             output/release/artifacts/PrimJS.xcframework.zip
+            output/release/artifacts/BaseDevtool.xcframework.zip
+            output/release/artifacts/DebugRouter.xcframework.zip
+            output/release/artifacts/LynxDevtool.xcframework.zip
+            output/release/artifacts/LynxService.xcframework.zip
+            output/release/artifacts/XElement.xcframework.zip
           draft: false
           prerelease: false
 

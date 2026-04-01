@@ -1,4 +1,25 @@
 PODS:
+  - BaseDevtool (3.6.0):
+    - BaseDevtool/framework (= 3.6.0)
+  - BaseDevtool/framework (3.6.0):
+    - DebugRouter (>= 5.0.13)
+    - Lynx (= 3.6.0)
+    - LynxBase (= 3.6.0)
+  - DebugRouter (5.0.13):
+    - DebugRouter/Framework (= 5.0.13)
+    - DebugRouter/MessageTransceiverEnable (= 5.0.13)
+    - DebugRouter/Native (= 5.0.13)
+    - DebugRouter/third_party (= 5.0.13)
+  - DebugRouter/Framework (5.0.13):
+    - DebugRouter/Native
+  - DebugRouter/MessageTransceiverEnable (5.0.13)
+  - DebugRouter/Native (5.0.13):
+    - DebugRouter/third_party
+  - DebugRouter/third_party (5.0.13):
+    - DebugRouter/third_party/jsoncpp (= 5.0.13)
+  - DebugRouter/third_party/jsoncpp (5.0.13)
+  - Lynx (3.6.0):
+    - Lynx/Framework (= 3.6.0)
   - Lynx/Framework (3.6.0):
     - Lynx/ReleaseResource
     - LynxBase/Framework
@@ -8,8 +29,42 @@ PODS:
     - PrimJS/napi/quickjs
     - PrimJS/quickjs (= 3.6.1)
   - Lynx/ReleaseResource (3.6.0)
+  - LynxBase (3.6.0):
+    - LynxBase/Framework (= 3.6.0)
   - LynxBase/Framework (3.6.0):
     - LynxServiceAPI/Core
+  - LynxDevtool (3.6.0):
+    - LynxDevtool/Framework (= 3.6.0)
+    - LynxDevtool/LynxCore (= 3.6.0)
+    - LynxDevtool/LynxRecorder (= 3.6.0)
+  - LynxDevtool/Framework (3.6.0):
+    - BaseDevtool (= 3.6.0)
+    - DebugRouter (>= 5.0.13)
+    - Lynx (= 3.6.0)
+    - LynxBase (= 3.6.0)
+    - LynxDevtool/Framework/zlib (= 3.6.0)
+    - LynxDevtool/LynxCore
+    - PrimJS/quickjs_debugger
+    - PrimJS/quickjs_heapprofiler
+    - PrimJS/quickjs_profiler
+    - SocketRocket
+  - LynxDevtool/Framework/zlib (3.6.0):
+    - BaseDevtool (= 3.6.0)
+    - DebugRouter (>= 5.0.13)
+    - Lynx (= 3.6.0)
+    - LynxBase (= 3.6.0)
+    - LynxDevtool/LynxCore
+    - PrimJS/quickjs_debugger
+    - PrimJS/quickjs_heapprofiler
+    - PrimJS/quickjs_profiler
+    - SocketRocket
+  - LynxDevtool/LynxCore (3.6.0)
+  - LynxDevtool/LynxRecorder (3.6.0):
+    - LynxDevtool/Framework
+  - LynxService/Devtool (3.6.0):
+    - Lynx (= 3.6.0)
+    - LynxDevtool (= 3.6.0)
+    - LynxServiceAPI (= 3.6.0)
   - LynxServiceAPI (3.6.0):
     - LynxServiceAPI/Core (= 3.6.0)
   - LynxServiceAPI/Core (3.6.0)
@@ -35,25 +90,59 @@ PODS:
     - PrimJS/quickjs
   - PrimJS/quickjs (3.6.1):
     - PrimJS/log
+  - PrimJS/quickjs_debugger (3.6.1):
+    - PrimJS/quickjs
+  - PrimJS/quickjs_heapprofiler (3.6.1):
+    - PrimJS/quickjs_debugger
+  - PrimJS/quickjs_profiler (3.6.1):
+    - PrimJS/quickjs_debugger
+  - SocketRocket (0.7.1)
+  - XElement (3.6.0):
+    - XElement/Behavior (= 3.6.0)
+    - XElement/Input (= 3.6.0)
+    - XElement/Overlay (= 3.6.0)
+  - XElement/Behavior (3.6.0):
+    - Lynx (= 3.6.0)
+    - XElement/Input
+    - XElement/Overlay
+  - XElement/Input (3.6.0):
+    - Lynx (= 3.6.0)
+  - XElement/Overlay (3.6.0):
+    - Lynx (= 3.6.0)
 
 DEPENDENCIES:
   - Lynx/Framework (= 3.6.0)
+  - LynxDevtool (= 3.6.0)
+  - LynxService/Devtool (= 3.6.0)
   - PrimJS/napi
   - PrimJS/quickjs
+  - XElement (= 3.6.0)
 
 SPEC REPOS:
   trunk:
+    - BaseDevtool
+    - DebugRouter
     - Lynx
     - LynxBase
+    - LynxDevtool
+    - LynxService
     - LynxServiceAPI
     - PrimJS
+    - SocketRocket
+    - XElement
 
 SPEC CHECKSUMS:
+  BaseDevtool: 39ad8896da6d55bfe4a2231feb85b8e0ef23e6e3
+  DebugRouter: 886acbbb1ef587265ba3d51ee77e323514b0c063
   Lynx: 49ad3adbc536c42e22aceff5e6bcb5a60f605ad0
   LynxBase: 8c285e5986c565dc3e06d47c08b6e11b561980fe
+  LynxDevtool: 48ea15dcdf93c8c0fb3849e0b2d94d07ff96e4a7
+  LynxService: 42a3847a279c7fff63c3794d4c6ef53ee68ef629
   LynxServiceAPI: a552e8346a375cb500637cd7e05dd1cf2b219920
   PrimJS: ab129af0dc78fa1aa9cf6b33f51e3c9790d6f617
+  SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
+  XElement: fb90e5e349dc5728f242f3881d2e5e389f3e329a
 
-PODFILE CHECKSUM: d1edbeb63fd294e480c94b95a7eef0fdb0599ee1
+PODFILE CHECKSUM: b16e15f4db2d7096909e72b71fb8836568bc3dcf
 
 COCOAPODS: 1.16.2

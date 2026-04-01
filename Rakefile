@@ -9,7 +9,17 @@ require 'xcodeproj'
 module Release
   extend self
 
-  FRAMEWORKS = %w[Lynx LynxBase LynxServiceAPI PrimJS].freeze
+  FRAMEWORKS = %w[
+    BaseDevtool
+    DebugRouter
+    Lynx
+    LynxBase
+    LynxDevtool
+    LynxService
+    LynxServiceAPI
+    PrimJS
+    XElement
+  ].freeze
   ROOT = File.expand_path(__dir__)
   BUILD_SCRIPT = File.join(ROOT, 'build_xcframeworks.sh')
   OUTPUT_DIR = File.join(ROOT, 'output')
