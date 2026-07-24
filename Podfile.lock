@@ -109,8 +109,8 @@ DEPENDENCIES:
   - Lynx/Framework (= 3.9.0)
   - LynxDevtool (= 3.9.0)
   - LynxService/Devtool (= 3.9.0)
-  - PrimJS/napi
-  - PrimJS/quickjs
+  - PrimJS/napi (= 3.8.0-alpha.6)
+  - PrimJS/quickjs (= 3.8.0-alpha.6)
   - XElement/Input (= 3.9.0)
   - XElement/Overlay (= 3.9.0)
   - XElement/ScrollCoordinator (= 3.9.0)
@@ -141,6 +141,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   XElement: 49b95dcd304c4a3bd4af335962c45a65173033b3
 
-PODFILE CHECKSUM: 764231f52327f8eade365287fe0ddc2584968f53
+PODFILE CHECKSUM: 844bd7f0a2be17c2883d742b404edfaabf18a330
 
 COCOAPODS: 1.16.2
