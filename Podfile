@@ -6,14 +6,19 @@ source 'https://cdn.cocoapods.org/'
 target 'LynxPrebuild' do
   use_frameworks! # Dynamic framework for resource bundle support
 
-  pod 'Lynx', '3.6.0', subspecs: %w[Framework]
+  pod 'Lynx', '3.9.0', subspecs: %w[Framework]
 
-  pod 'PrimJS', subspecs: %w[quickjs napi]
+  pod 'PrimJS', '3.8.0-alpha.6', subspecs: %w[quickjs napi] # Pre-release required by Lynx 3.9.0; must be pinned explicitly
 
-  pod 'LynxService', '3.6.0', subspecs: [
+  pod 'LynxService', '3.9.0', subspecs: [
     'Devtool'
   ]
-  pod 'LynxDevtool', '3.6.0'
+  pod 'LynxDevtool', '3.9.0'
 
-  pod 'XElement', '3.6.0'
+  pod 'XElement', '3.9.0', subspecs: %w[
+    ScrollCoordinator
+    ViewPager
+    Input
+    Overlay
+  ]
 end
