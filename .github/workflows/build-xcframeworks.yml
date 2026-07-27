@@ -13,6 +13,9 @@ jobs:
     permissions:
       contents: write
 
+    env:
+      RELEASE_NOTES_PATH: output/release/RELEASE_NOTES.md
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -49,43 +52,47 @@ jobs:
       - name: List Artifacts
         run: ls -R output/release
 
+      # Written to a file and passed via body_path rather than through GITHUB_OUTPUT,
+      # so the Markdown table is never reinterpreted as a heredoc terminator or an
+      # expression substitution.
       - name: Generate Release Notes
-        id: release_notes
+        shell: bash
         run: |
+          : "${RELEASE_TAG:?RELEASE_TAG was not set by the Derive Release Metadata step}"
+
+          shopt -s nullglob
+          artifacts=(output/release/artifacts/*.xcframework.zip)
+          if [[ ${#artifacts[@]} -eq 0 ]]; then
+            echo "::error::No XCFramework artifacts found in output/release/artifacts"
+            exit 1
+          fi
+
           {
-            echo 'body<<EOF'
-            echo '# Lynx Binary Release'
-            echo
-            echo '- Tag: ${{ steps.release_meta.outputs.tag }}'
-            echo
-            echo '- Lynx.xcframework'
-            echo '- LynxBase.xcframework'
-            echo '- LynxServiceAPI.xcframework'
-            echo '- PrimJS.xcframework'
-            echo '- BaseDevtool.xcframework'
-            echo '- DebugRouter.xcframework'
-            echo '- LynxDevtool.xcframework'
-            echo '- LynxService.xcframework'
-            echo '- XElement.xcframework'
-            echo EOF
-          } >> "$GITHUB_OUTPUT"
+            printf 'Tag: `%s`\n\n' "${RELEASE_TAG}"
+            printf '## XCFrameworks\n\n'
+            printf 'Checksums are the SHA-256 of each zip, identical to what `swift package compute-checksum` reports. Use them for SwiftPM `binaryTarget(name:url:checksum:)`.\n\n'
+            printf '| Artifact | Checksum (SHA-256) |\n'
+            printf '| --- | --- |\n'
+            for zip in "${artifacts[@]}"; do
+              name="$(basename "${zip}")"
+              checksum="$(shasum -a 256 "${zip}" | cut -d ' ' -f 1)"
+              printf '| `%s` | `%s` |\n' "${name}" "${checksum}"
+            done
+          } > "${RELEASE_NOTES_PATH}"
+
+          echo "Generated release notes:"
+          cat "${RELEASE_NOTES_PATH}"
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.release_meta.outputs.tag }}
           name: Lynx Release ${{ steps.release_meta.outputs.tag }}
-          body: ${{ steps.release_notes.outputs.body }}
-          files: |
-            output/release/artifacts/Lynx.xcframework.zip
-            output/release/artifacts/LynxBase.xcframework.zip
-            output/release/artifacts/LynxServiceAPI.xcframework.zip
-            output/release/artifacts/PrimJS.xcframework.zip
-            output/release/artifacts/BaseDevtool.xcframework.zip
-            output/release/artifacts/DebugRouter.xcframework.zip
-            output/release/artifacts/LynxDevtool.xcframework.zip
-            output/release/artifacts/LynxService.xcframework.zip
-            output/release/artifacts/XElement.xcframework.zip
+          body_path: ${{ env.RELEASE_NOTES_PATH }}
+          files: output/release/artifacts/*.xcframework.zip
+          # Without this a glob matching nothing only warns, publishing an
+          # asset-less release at a tag consumers may already pin.
+          fail_on_unmatched_files: true
           draft: false
           prerelease: false
 

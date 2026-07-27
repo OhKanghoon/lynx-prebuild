@@ -9,25 +9,26 @@ require 'xcodeproj'
 module Release
   extend self
 
-  FRAMEWORKS = %w[
-    BaseDevtool
-    DebugRouter
-    Lynx
-    LynxBase
-    LynxDevtool
-    LynxService
-    LynxServiceAPI
-    PrimJS
-    XElement
-  ].freeze
   ROOT = File.expand_path(__dir__)
   BUILD_SCRIPT = File.join(ROOT, 'build_xcframeworks.sh')
   OUTPUT_DIR = File.join(ROOT, 'output')
   XCFRAMEWORK_DIR = File.join(OUTPUT_DIR, 'xcframeworks')
   ARTIFACT_DIR = File.join(OUTPUT_DIR, 'release', 'artifacts')
 
+  # Every XCFramework the build produces is released, so adding a pod to the
+  # Podfile is enough to add it to the release. This glob is deliberately not the
+  # thing that decides completeness -- build_xcframeworks.sh asserts its output
+  # against the CocoaPods framework manifest and fails the build on any mismatch,
+  # so by the time we get here the directory is already known to hold exactly the
+  # set an app would embed.
   def frameworks
-    FRAMEWORKS
+    ensure_xcframework_dir!
+    names = Dir.glob(File.join(XCFRAMEWORK_DIR, '*.xcframework'))
+                .map { |path| File.basename(path, '.xcframework') }
+                .sort
+    raise "No XCFrameworks found in #{XCFRAMEWORK_DIR}" if names.empty?
+
+    names
   end
 
   def ensure_dirs!
@@ -53,10 +54,13 @@ module Release
     File.join(ARTIFACT_DIR, "#{name}.xcframework.zip")
   end
 
-  def run!(command)
-    puts "→ #{command}"
-    success = system(command)
-    raise "Command failed: #{command}" unless success
+  # Takes the command as separate arguments so it is exec'd directly instead of
+  # going through /bin/sh. Framework names come from directory names in the build
+  # archive, so they must never be interpolated into a shell string.
+  def run!(*command)
+    printable = command.shelljoin
+    puts "→ #{printable}"
+    raise "Command failed: #{printable}" unless system(*command)
   end
 
   def zip_framework(name)
@@ -64,7 +68,7 @@ module Release
     source = ensure_framework!(name)
     destination = artifact_zip_path(name)
     FileUtils.rm_f(destination)
-    run!("ditto -c -k --sequesterRsrc --keepParent '#{source}' '#{destination}'")
+    run!('ditto', '-c', '-k', '--sequesterRsrc', '--keepParent', source, destination)
     destination
   end
 
@@ -100,7 +104,7 @@ module ProjectSetup
   end
 
   def install_pods!
-    Release.run!('bundle exec pod install')
+    Release.run!('bundle', 'exec', 'pod', 'install')
   end
 end
 
@@ -121,7 +125,7 @@ end
 namespace :build do
   desc 'Build XCFrameworks using Pods-LynxPrebuild scheme'
   task xcframeworks: 'setup:pods' do
-    Release.run!("bash '#{Release.build_script}'")
+    Release.run!('bash', Release.build_script)
   end
 end
 
