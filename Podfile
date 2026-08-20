@@ -15,6 +15,9 @@ target 'LynxPrebuild' do
   ]
   pod 'LynxDevtool', '3.9.0'
 
+  pod 'DebugRouter', '5.0.15'
+  pod 'DebugRouter/MessageTransceiverEnable', '5.0.15'
+
   pod 'XElement', '3.9.0', subspecs: %w[
     ScrollCoordinator
     ViewPager

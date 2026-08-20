@@ -11,6 +11,7 @@ PODS:
     - DebugRouter/third_party (= 5.0.15)
   - DebugRouter/Framework (5.0.15):
     - DebugRouter/Native
+  - DebugRouter/MessageTransceiverEnable (5.0.15)
   - DebugRouter/Native (5.0.15):
     - DebugRouter/third_party
   - DebugRouter/third_party (5.0.15):
@@ -106,6 +107,8 @@ PODS:
     - Lynx (= 3.9.0)
 
 DEPENDENCIES:
+  - DebugRouter (= 5.0.15)
+  - DebugRouter/MessageTransceiverEnable (= 5.0.15)
   - Lynx/Framework (= 3.9.0)
   - LynxDevtool (= 3.9.0)
   - LynxService/Devtool (= 3.9.0)
@@ -141,6 +144,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   XElement: 49b95dcd304c4a3bd4af335962c45a65173033b3
 
-PODFILE CHECKSUM: 844bd7f0a2be17c2883d742b404edfaabf18a330
+PODFILE CHECKSUM: 18218e97a273d2ad5ae3cceb73b2dd63b4b2b140
 
 COCOAPODS: 1.16.2
