@@ -12,10 +12,14 @@ The manifest cross-check above guards the set of frameworks, not what is inside 
 
 Two pods need their subspecs named explicitly in the `Podfile`:
 
-- **`XElement`** defaults to all ten subspecs. `Markdown` and `Behavior` cannot be built here at all: `Markdown` depends on `ServalMarkdown`, which pulls `LynxTextra`, a statically linked binary that CocoaPods will not embed under `use_frameworks!`. Since `Behavior` — the `LynxUI*AutoRegistry` glue — depends on `Markdown`, it is out too, which is why the host app has to register components itself. `SVG` and `Refresh` build fine but each adds a third-party framework (`ServalSVG`, `MJRefresh`) to the release.
+- **`XElement`** defaults to eleven subspecs. `Markdown`, `Behavior` and `AnimaX` cannot be built here at all: `Markdown` depends on `ServalMarkdown`, which pulls `LynxTextra`, a statically linked binary that CocoaPods will not embed under `use_frameworks!`; `AnimaX` (outside the default set) is itself a `static_framework` pod that also depends on `LynxTextra`. Since `Behavior` — the `LynxUI*AutoRegistry` glue — depends on `Markdown`, it is out too, which is why the host app has to register components itself. `SVG` and `Refresh` build fine but each adds a third-party framework (`ServalSVG`, `MJRefresh`) to the release. Everything else, `Video` included, is in.
 - **`LynxService`** declares no `default_subspecs`, which in CocoaPods means *all* of them. Naming `Devtool` is what keeps `Http`, `Image` and `Log` out; `Image` alone would add `SDWebImage`, `SDWebImageWebPCoder` and `libwebp`.
 
-Everything else is either at its own default (`Lynx`, `PrimJS`, `DebugRouter`) or has no default and is deliberately taken whole (`LynxDevtool`).
+Everything else is either at its own default (`Lynx`, `PrimJS`, `DebugRouter`) or has no default and is deliberately taken whole (`LynxDevtool`). Subspecs a pod adds for its own use — `Lynx/Gfx` and `LynxServiceAPI/Native` in 4.1.0 — arrive through `Lynx/Framework`'s own dependencies and need no `Podfile` entry.
+
+## Spec Sources
+
+lynx-family stopped publishing to CocoaPods trunk after 4.0.2 — their [Specs repo](https://github.com/lynx-family/Specs) states that "cocoapods trunk is no longer maintained". From 4.1.0 the `Lynx`, `LynxBase`, `LynxServiceAPI`, `LynxService`, `LynxDevtool`, `BaseDevtool` and `XElement` podspecs exist only in that self-hosted repo, which the `Podfile` lists as a `source` alongside the CDN. `PrimJS`, `DebugRouter` and `SocketRocket` still resolve from trunk; `Podfile.lock`'s `SPEC REPOS` section records which repo each pod came from.
 
 ## Resource Bundle Handling
 
@@ -42,7 +46,7 @@ If you prefer manual releases, run the workflow via `workflow_dispatch`, downloa
 
 Each release contains one zip per framework CocoaPods would embed. The release notes are authoritative for a given tag — they list exactly what shipped, with each zip's SHA-256 checksum.
 
-These are dynamic frameworks, so you need every framework in the transitive closure of what you link. As of Lynx 4.0.1 the graph is:
+These are dynamic frameworks, so you need every framework in the transitive closure of what you link. As of Lynx 4.1.0 the graph is:
 
 | Group | Frameworks | Needed when |
 | --- | --- | --- |
