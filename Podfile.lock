@@ -96,6 +96,8 @@ PODS:
   - PrimJS/quickjs_profiler (4.0.0):
     - PrimJS/quickjs_debugger
   - SocketRocket (0.7.1)
+  - XElement/BlurView (4.0.1):
+    - Lynx (= 4.0.1)
   - XElement/Input (4.0.1):
     - Lynx (= 4.0.1)
   - XElement/Overlay (4.0.1):
@@ -104,6 +106,8 @@ PODS:
     - Lynx (= 4.0.1)
     - XElement/ViewPager
   - XElement/ViewPager (4.0.1):
+    - Lynx (= 4.0.1)
+  - XElement/WebView (4.0.1):
     - Lynx (= 4.0.1)
 
 DEPENDENCIES:
@@ -114,10 +118,12 @@ DEPENDENCIES:
   - LynxService/Devtool (= 4.0.1)
   - PrimJS/napi (= 4.0.0)
   - PrimJS/quickjs (= 4.0.0)
+  - XElement/BlurView (= 4.0.1)
   - XElement/Input (= 4.0.1)
   - XElement/Overlay (= 4.0.1)
   - XElement/ScrollCoordinator (= 4.0.1)
   - XElement/ViewPager (= 4.0.1)
+  - XElement/WebView (= 4.0.1)
 
 SPEC REPOS:
   trunk:
@@ -144,6 +150,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   XElement: f1f022652fbc5e109e7d4d66299493bfd1a74b31
 
-PODFILE CHECKSUM: 261c5d4b04265a41a852609531ce6037d992be46
+PODFILE CHECKSUM: c8a70bbedc7c32e729b08fbfea013600c708ef69
 
 COCOAPODS: 1.16.2

@@ -6,6 +6,17 @@ The release set is derived from the build, not hand-maintained: every framework 
 
 To keep that from silently under-delivering, `build_xcframeworks.sh` diffs what it built against `Pods/Target Support Files/Pods-LynxPrebuild/Pods-LynxPrebuild-frameworks.sh` — the manifest Xcode itself uses to embed frameworks — and fails the build on any mismatch. A framework that stops being produced breaks CI instead of quietly vanishing from a release.
 
+## Subspec Selection
+
+The manifest cross-check above guards the set of frameworks, not what is inside each one. A pod that gains a subspec between releases changes a framework's contents while the framework count stays identical, so nothing fails — that is how the `4.0.1` release shipped `XElement` with four of its ten subspecs. When bumping versions, diff each pod's subspec list, not just its version.
+
+Two pods need their subspecs named explicitly in the `Podfile`:
+
+- **`XElement`** defaults to all ten subspecs. `Markdown` and `Behavior` cannot be built here at all: `Markdown` depends on `ServalMarkdown`, which pulls `LynxTextra`, a statically linked binary that CocoaPods will not embed under `use_frameworks!`. Since `Behavior` — the `LynxUI*AutoRegistry` glue — depends on `Markdown`, it is out too, which is why the host app has to register components itself. `SVG` and `Refresh` build fine but each adds a third-party framework (`ServalSVG`, `MJRefresh`) to the release.
+- **`LynxService`** declares no `default_subspecs`, which in CocoaPods means *all* of them. Naming `Devtool` is what keeps `Http`, `Image` and `Log` out; `Image` alone would add `SDWebImage`, `SDWebImageWebPCoder` and `libwebp`.
+
+Everything else is either at its own default (`Lynx`, `PrimJS`, `DebugRouter`) or has no default and is deliberately taken whole (`LynxDevtool`).
+
 ## Resource Bundle Handling
 
 Resource bundles (like `LynxResources.bundle` containing `lynx_core.js`) end up inside their owning framework automatically, because the `Podfile` uses `use_frameworks!` and dynamic frameworks carry their own resources. Nothing in the build script copies them; the XCFrameworks are self-contained as a consequence of the linkage choice.
