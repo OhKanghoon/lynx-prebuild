@@ -31,7 +31,7 @@ If you prefer manual releases, run the workflow via `workflow_dispatch`, downloa
 
 Each release contains one zip per framework CocoaPods would embed. The release notes are authoritative for a given tag — they list exactly what shipped, with each zip's SHA-256 checksum.
 
-These are dynamic frameworks, so you need every framework in the transitive closure of what you link. As of Lynx 3.9.0 the graph is:
+These are dynamic frameworks, so you need every framework in the transitive closure of what you link. As of Lynx 4.0.1 the graph is:
 
 | Group | Frameworks | Needed when |
 | --- | --- | --- |
