@@ -21,6 +21,10 @@ Everything else is either at its own default (`Lynx`, `PrimJS`, `DebugRouter`) o
 
 lynx-family stopped publishing to CocoaPods trunk after 4.0.2 — their [Specs repo](https://github.com/lynx-family/Specs) states that "cocoapods trunk is no longer maintained". From 4.1.0 the `Lynx`, `LynxBase`, `LynxServiceAPI`, `LynxService`, `LynxDevtool`, `BaseDevtool` and `XElement` podspecs exist only in that self-hosted repo, which the `Podfile` lists as a `source` alongside the CDN. `PrimJS`, `DebugRouter` and `SocketRocket` still resolve from trunk; `Podfile.lock`'s `SPEC REPOS` section records which repo each pod came from.
 
+## Upstream Workarounds
+
+The `Podfile`'s `post_install` hook drops `rts_inspector_manager_factory_stub_ios.cc` from the `LynxDevtool` target. LynxDevtool 4.1.0's GN target compiles that file *in addition to* the generic `rts_inspector_manager_factory_stub.cc` on iOS, and both define `LynxRegisterRTSInspectorManagerFactory`. Upstream consumes LynxDevtool as a static framework, where the linker takes the first matching object out of the archive and never sees the second; a dynamic framework links every object and the archive fails with `ld: 1 duplicate symbols`. The generic stub is the one that must survive — it alone defines `LynxRegisterRTSInspectorManagerFactoryImpl`, which `LynxDevToolNGDarwinDelegate.mm` anchors — so the object set after the hook is exactly what 4.0.1 built. The hook is guarded on both files being present and becomes a no-op once upstream fixes the GN target; as of `4.3.0-nightly.202609090610` it has not.
+
 ## Resource Bundle Handling
 
 Resource bundles (like `LynxResources.bundle` containing `lynx_core.js`) end up inside their owning framework automatically, because the `Podfile` uses `use_frameworks!` and dynamic frameworks carry their own resources. Nothing in the build script copies them; the XCFrameworks are self-contained as a consequence of the linkage choice.

@@ -55,3 +55,31 @@ target 'LynxPrebuild' do
     WebView
   ]
 end
+
+# LynxDevtool 4.1.0 ships two translation units that both define
+# LynxRegisterRTSInspectorManagerFactory: the generic
+# rts_inspector_manager_factory_stub.cc and, added on iOS by its GN target,
+# rts_inspector_manager_factory_stub_ios.cc. Upstream never notices because it
+# consumes LynxDevtool as a static framework, where the linker pulls only the
+# first object out of the archive. A dynamic framework links every object, so
+# the archive here fails with "ld: 1 duplicate symbols".
+#
+# Only the generic stub defines LynxRegisterRTSInspectorManagerFactoryImpl,
+# which LynxDevToolNGDarwinDelegate.mm anchors, so that one must stay and the
+# iOS stub is the one to drop -- the resulting object set is exactly what 4.0.1
+# built. The guard on both files being present makes this a no-op once
+# upstream fixes the GN target; still listed both in the latest nightly as of
+# 4.3.0-nightly.202609090610.
+post_install do |installer|
+  target = installer.pods_project.targets.find { |t| t.name == 'LynxDevtool' }
+  next unless target
+
+  stubs = target.source_build_phase.files.select do |bf|
+    bf.file_ref&.path.to_s.match?(/rts_inspector_manager_factory_stub(_ios)?\.cc\z/)
+  end
+  next unless stubs.size == 2
+
+  ios_stub = stubs.find { |bf| bf.file_ref.path.to_s.end_with?('_stub_ios.cc') }
+  target.source_build_phase.remove_build_file(ios_stub)
+  puts "LynxDevtool: dropped rts_inspector_manager_factory_stub_ios.cc (duplicate of the generic stub)"
+end
