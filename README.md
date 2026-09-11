@@ -42,9 +42,11 @@ Results are placed under `output/release/artifacts/`.
 ## GitHub Actions workflow
 
 - Triggers on **any tag push** or manual `workflow_dispatch`.
-- Steps: set up Xcode + Ruby → run `bundle exec rake release:prepare` → compute SHA-256 checksums → publish a GitHub Release with every `.xcframework.zip` under `output/release/artifacts/`, tabulated with its checksum in the release body.
+- Steps: set up Ruby → run `bundle exec rake release:prepare` → compute SHA-256 checksums → publish a GitHub Release with every `.xcframework.zip` under `output/release/artifacts/`, tabulated with its checksum in the release body.
 
 If you prefer manual releases, run the workflow via `workflow_dispatch`, download the artifacts, and create the release yourself.
+
+The job runs on the `macos-26` image with whatever Xcode that image ships as its default, deliberately unpinned. The SDK the frameworks are compiled against matters: code gated on the build SDK — such as `XElement`'s glass effects, which are compiled only when `__IPHONE_26_0` is available — is silently absent from a binary built with an older Xcode, with no build failure to point at it. Tracking the image default keeps the SDK current without a version bump on every Xcode release.
 
 ## Using the binaries
 

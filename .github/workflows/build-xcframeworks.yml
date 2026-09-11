@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build & Release
-    runs-on: macos-14
+    runs-on: macos-26
     permissions:
       contents: write
 
@@ -26,11 +26,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-
-      - name: Setup Xcode
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: "15.2"
 
       - name: Derive Release Metadata
         id: release_meta
