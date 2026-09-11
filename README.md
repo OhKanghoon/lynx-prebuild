@@ -46,7 +46,7 @@ Results are placed under `output/release/artifacts/`.
 
 If you prefer manual releases, run the workflow via `workflow_dispatch`, download the artifacts, and create the release yourself.
 
-The job runs on the `macos-26` image with whatever Xcode that image ships as its default, deliberately unpinned. The SDK the frameworks are compiled against matters: code gated on the build SDK — such as `XElement`'s glass effects, which are compiled only when `__IPHONE_26_0` is available — is silently absent from a binary built with an older Xcode, with no build failure to point at it. Tracking the image default keeps the SDK current without a version bump on every Xcode release.
+The job runs on the `macos-26` image and pins Xcode 26.2 — the oldest release that meets Apple's App Store submission requirement (Xcode 26 with the iOS 26 SDK), which is also the floor Firebase builds its binaries with. The SDK the frameworks are compiled against matters: code gated on the build SDK — such as `XElement`'s glass effects, which are compiled only when `__IPHONE_26_0` is available — is silently absent from a binary built with an older Xcode, with no build failure to point at it. The frameworks are Objective-C/C++ and carry no Swift module interfaces, so a newer Xcode would not hurt consumers on older ones; the pin is for reproducibility and for moving in step with the submission requirement rather than with every Xcode release.
 
 ## Using the binaries
 

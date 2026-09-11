@@ -27,6 +27,17 @@ jobs:
         with:
           bundler-cache: true
 
+      # Pinned to the oldest Xcode that satisfies Apple's App Store submission
+      # requirement (Xcode 26 / iOS 26 SDK), the same floor Firebase builds its
+      # binaries with. The SDK also decides what ends up in the frameworks:
+      # XElement's glass effects only compile when __IPHONE_26_0 exists, so
+      # anything older than 26.0 silently drops them. Bump this only together
+      # with that requirement, and check the macos-26 image still ships it.
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode_26.2.app
+          xcodebuild -version
+
       - name: Derive Release Metadata
         id: release_meta
         shell: bash
